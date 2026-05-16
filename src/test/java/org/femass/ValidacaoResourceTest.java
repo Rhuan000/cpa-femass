@@ -11,10 +11,9 @@ class ValidacaoResourceTest {
     @Test
     void testHelloEndpoint() {
         given()
-          .when().get("/validacao")
+          .when().get("/validacao/verificar-status")
           .then()
-             .statusCode(200)
-             .body(is("Hello from Quarkus REST"));
+             .statusCode(400)
+             .body("error", is("Hash é obrigatório como parâmetro de query"));
     }
-
 }

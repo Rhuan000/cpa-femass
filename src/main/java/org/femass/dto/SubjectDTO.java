@@ -6,6 +6,6 @@ public class SubjectDTO {
     public String subjectId; //Exemplo "adm-001"
     public String subjectName;
     public String teacherName;
-    public ArrayList<RespostaDTO> awnsers;
+    public ArrayList<RespostaDTO> answers;
     public String comment;
 }

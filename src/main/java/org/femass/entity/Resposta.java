@@ -3,7 +3,7 @@ package org.femass.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "respostas")
+@Table(name = "REPOSTA")
 public class Resposta {
 
     @Id

@@ -3,14 +3,14 @@ package org.femass.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "perguntas")
+@Table(name = "PERGUNTA")
 public class Pergunta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name="TEXTO", nullable = false, unique = true)
     private String texto; // Texto da pergunta
 
     // Getters e Setters

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "cursos")
+@Table(name = "curso")
 public class Curso {
 
     @Id
@@ -14,7 +14,7 @@ public class Curso {
     @Column(nullable = false, unique = true)
     private String nome; // Nome do curso
 
-    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "curso")
     private List<Disciplina> disciplinas; // Disciplinas do curso
 
     // Getters e Setters
