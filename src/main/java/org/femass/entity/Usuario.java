@@ -17,10 +17,10 @@ public class Usuario {
     //Não tinha campo para salvar o email temporariamente
     @Column(nullable = true)
     private String email;
-
+/*
     @Column(nullable = true)
     private String curso; // Curso (apenas para estudantes)
-
+*/
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Avaliacao> avaliacoes; // Avaliações realizadas pelo usuário
 
@@ -40,7 +40,7 @@ public class Usuario {
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
-
+/*
     public String getCurso() {
         return curso;
     }
@@ -48,7 +48,7 @@ public class Usuario {
     public void setCurso(String curso) {
         this.curso = curso;
     }
-
+*/
     public List<Avaliacao> getAvaliacoes() {
         return avaliacoes;
     }
