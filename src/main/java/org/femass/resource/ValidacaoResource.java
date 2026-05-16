@@ -58,6 +58,11 @@ public class ValidacaoResource {
                 .entity(new ErrorResponseDTO(e.getMessage()))
                 .type(MediaType.APPLICATION_JSON)
                 .build();
+        } catch (IllegalStateException e) {
+            return Response.status(Response.Status.CONFLICT)
+                .entity(new ErrorResponseDTO(e.getMessage()))
+                .type(MediaType.APPLICATION_JSON)
+                .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(new ErrorResponseDTO("Erro ao validar hash: " + e.getMessage()))
@@ -96,6 +101,11 @@ public class ValidacaoResource {
             return Response.ok(response, MediaType.APPLICATION_JSON).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND)
+                .entity(new ErrorResponseDTO(e.getMessage()))
+                    .type(MediaType.APPLICATION_JSON)
+                .build();
+        } catch (IllegalStateException e) {
+            return Response.status(Response.Status.CONFLICT)
                 .entity(new ErrorResponseDTO(e.getMessage()))
                     .type(MediaType.APPLICATION_JSON)
                 .build();
