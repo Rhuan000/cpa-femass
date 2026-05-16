@@ -2,7 +2,7 @@ package org.femass.dto;
 
 public class ErrorResponseDTO {
     private String error;
-
+    public ErrorResponseDTO() {}
     public ErrorResponseDTO(String error) {
         this.error = error;
     }

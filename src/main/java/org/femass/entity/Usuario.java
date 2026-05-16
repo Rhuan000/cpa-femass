@@ -14,6 +14,10 @@ public class Usuario {
     @Column(nullable = false)
     private String tipo; // Estudante ou Docente
 
+    //Não tinha campo para salvar o email temporariamente
+    @Column(nullable = true)
+    private String email;
+
     @Column(nullable = true)
     private String curso; // Curso (apenas para estudantes)
 
