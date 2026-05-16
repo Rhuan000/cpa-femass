@@ -3,7 +3,6 @@ package org.femass.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import org.femass.entity.Validacao;
-import java.time.LocalDateTime;
 
 @ApplicationScoped
 public class ValidacaoService {
@@ -18,14 +17,31 @@ public class ValidacaoService {
         // Gera um hash SHA-256 do payload
         String hash = gerarHashSHA256(payload);
         
+        // Se o hash já existir, retorna a entidade existente para evitar violação de unique
+        Validacao existente = Validacao.find("hash", hash).firstResult();
+        if (existente != null) {
+            System.out.println("Hash já existente encontrado: " + hash);
+            return existente;
+        }
+
         // Cria e persiste a entidade Validacao
         Validacao validacao = new Validacao();
         validacao.setHash(hash);
         validacao.setValidado(false);
-        validacao.persist();
-        
-        System.out.println("Hash armazenado com sucesso: " + hash);
-        return validacao;
+        try {
+            validacao.persist();
+            System.out.println("Hash armazenado com sucesso: " + hash);
+            return validacao;
+        } catch (jakarta.persistence.PersistenceException pe) {
+            // Pode ocorrer uma condição de corrida: outro processo inseriu o mesmo hash.
+            // Recupera e retorna o registro existente.
+            Validacao recuperado = Validacao.find("hash", hash).firstResult();
+            if (recuperado != null) {
+                System.out.println("Persistência falhou por duplicate key; retornando registro existente para hash: " + hash);
+                return recuperado;
+            }
+            throw pe;
+        }
     }
 
     /**
@@ -60,34 +76,6 @@ public class ValidacaoService {
         return validacao;
     }
 
-    /**
-     * Valida um hash e retorna informações detalhadas
-     * @param hash - o hash a ser validado
-     * @return informações de validação (sucesso, tempo decorrido, tentativas)
-     * @throws IllegalArgumentException se o hash não existir
-     */
-    public java.util.Map<String, Object> validarHashComDetalhes(String hash) {
-        Validacao validacao = validarHash(hash);
-        
-        long tempoDecorridoMs = 0;
-        if (validacao.getDataCriacao() != null && validacao.getDataValidacao() != null) {
-            tempoDecorridoMs = java.time.temporal.ChronoUnit.MILLIS.between(
-                validacao.getDataCriacao(), 
-                validacao.getDataValidacao()
-            );
-        }
-        
-        java.util.Map<String, Object> detalhes = new java.util.HashMap<>();
-        detalhes.put("hashValido", true);
-        detalhes.put("hash", validacao.getHash());
-        detalhes.put("validado", validacao.getValidado());
-        detalhes.put("dataCriacao", validacao.getDataCriacao());
-        detalhes.put("dataValidacao", validacao.getDataValidacao());
-        detalhes.put("tentativasValidacao", validacao.getTentativasValidacao());
-        detalhes.put("tempoDecorridoMs", tempoDecorridoMs);
-        
-        return detalhes;
-    }
 
     /**
      * Verifica o status de validação de um hash
