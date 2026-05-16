@@ -2,11 +2,11 @@ package org.femass.dto;
 
 public class ValidacaoResponseDTO {
     private String message;
-    private Long id;
+    private String id;
     private String hash;
     private String payload;
 
-    public ValidacaoResponseDTO(String message, Long id, String hash, String payload) {
+    public ValidacaoResponseDTO(String message, String id, String hash, String payload) {
         this.message = message;
         this.id = id;
         this.hash = hash;
@@ -21,13 +21,8 @@ public class ValidacaoResponseDTO {
         this.message = message;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getHash() {
         return hash;

@@ -76,7 +76,6 @@ public class ValidacaoService {
         
         java.util.Map<String, Object> detalhes = new java.util.HashMap<>();
         detalhes.put("hashValido", true);
-        detalhes.put("id", validacao.id);
         detalhes.put("hash", validacao.getHash());
         detalhes.put("validado", validacao.getValidado());
         detalhes.put("dataCriacao", validacao.getDataCriacao());

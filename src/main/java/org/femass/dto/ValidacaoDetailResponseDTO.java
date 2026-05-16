@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class ValidacaoDetailResponseDTO {
 	private Boolean hashValido;
-	private Long id;
+	private String id;
 	private String hash;
 	private Boolean validado;
 	private LocalDateTime dataCriacao;
@@ -12,7 +12,7 @@ public class ValidacaoDetailResponseDTO {
 	private Integer tentativasValidacao;
 	private Long tempoDecorridoMs;
 
-	public ValidacaoDetailResponseDTO(Boolean hashValido, Long id, String hash, Boolean validado,
+	public ValidacaoDetailResponseDTO(Boolean hashValido, String id, String hash, Boolean validado,
 									  LocalDateTime dataCriacao, LocalDateTime dataValidacao,
 									  Integer tentativasValidacao, Long tempoDecorridoMs) {
 		this.hashValido = hashValido;
@@ -27,8 +27,8 @@ public class ValidacaoDetailResponseDTO {
 
 	public Boolean getHashValido() { return hashValido; }
 	public void setHashValido(Boolean hashValido) { this.hashValido = hashValido; }
-	public Long getId() { return id; }
-	public void setId(Long id) { this.id = id; }
+	public String getId() { return id; }
+	public void setId(String id) { this.id = id; }
 	public String getHash() { return hash; }
 	public void setHash(String hash) { this.hash = hash; }
 	public Boolean getValidado() { return validado; }

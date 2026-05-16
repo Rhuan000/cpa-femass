@@ -19,12 +19,6 @@ public class ValidacaoResource {
     @Inject
     ValidacaoService service;
 
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
-        return "Hello from Quarkus REST";
-    }
-
     @POST
     @Path("/armazenar-hash")
     @Produces(MediaType.APPLICATION_JSON)
@@ -32,11 +26,11 @@ public class ValidacaoResource {
         Validacao validacao = service.armazenarHash(payload);
         ValidacaoResponseDTO response = new ValidacaoResponseDTO(
             "Payload recebido com sucesso!",
-            validacao.id,
+            validacao.getHash(),
             validacao.getHash(),
             payload
         );
-        return Response.ok().entity(response).build();
+        return Response.ok(response, MediaType.APPLICATION_JSON).build();
     }
 
     @PUT
@@ -46,6 +40,7 @@ public class ValidacaoResource {
         if (hash == null || hash.isBlank()) {
             return Response.status(Response.Status.BAD_REQUEST)
                 .entity(new ErrorResponseDTO("Hash é obrigatório como parâmetro de query"))
+                .type(MediaType.APPLICATION_JSON)
                 .build();
         }
 
@@ -53,18 +48,20 @@ public class ValidacaoResource {
             Validacao validacao = service.validarHash(hash);
             ValidacaoResponseDTO response = new ValidacaoResponseDTO(
                 "Hash validado com sucesso!",
-                validacao.id,
+                validacao.getHash(),
                 validacao.getHash(),
                 "validacao_confirmada"
             );
-            return Response.ok().entity(response).build();
+            return Response.ok(response, MediaType.APPLICATION_JSON).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND)
                 .entity(new ErrorResponseDTO(e.getMessage()))
+                .type(MediaType.APPLICATION_JSON)
                 .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(new ErrorResponseDTO("Erro ao validar hash: " + e.getMessage()))
+                .type(MediaType.APPLICATION_JSON)
                 .build();
         }
     }
@@ -88,7 +85,7 @@ public class ValidacaoResource {
 
             ValidacaoDetailResponseDTO response = new ValidacaoDetailResponseDTO(
                 true,
-                validacao.id,
+                validacao.getHash(),
                 validacao.getHash(),
                 validacao.getValidado(),
                 validacao.getDataCriacao(),
@@ -96,7 +93,7 @@ public class ValidacaoResource {
                 validacao.getTentativasValidacao(),
                 tempoDecorrido
             );
-            return Response.ok().entity(response).build();
+            return Response.ok(response, MediaType.APPLICATION_JSON).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND)
                 .entity(new ErrorResponseDTO(e.getMessage()))
@@ -126,7 +123,7 @@ public class ValidacaoResource {
                 : "Este hash ainda está pendente de validação";
 
             ValidacaoStatusDTO response = new ValidacaoStatusDTO(hash, validado, status, mensagem);
-            return Response.ok().entity(response).build();
+            return Response.ok(response, MediaType.APPLICATION_JSON).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND)
                 .entity(new ErrorResponseDTO(e.getMessage()))
@@ -152,7 +149,7 @@ public class ValidacaoResource {
             Validacao validacao = service.buscarHash(hash);
             ValidacaoResponseDTO response = new ValidacaoResponseDTO(
                 "Hash encontrado com sucesso!",
-                validacao.id,
+                validacao.getHash(),
                 validacao.getHash(),
                 validacao.getValidado() ? "validado" : "pendente"
             );
