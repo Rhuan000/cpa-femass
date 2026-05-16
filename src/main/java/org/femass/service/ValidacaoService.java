@@ -37,6 +37,25 @@ public class ValidacaoService {
         return validacao;
     }
 
+    @Transactional
+    public Validacao armazenarCodigoValidacao(String codigoValidacao) {
+        if (codigoValidacao == null || codigoValidacao.isBlank()) {
+            throw new IllegalArgumentException("Codigo de validacao e obrigatorio");
+        }
+
+        Validacao validacaoExistente = Validacao.find("hash", codigoValidacao).firstResult();
+        if (validacaoExistente != null) {
+            return validacaoExistente;
+        }
+
+        Validacao validacao = new Validacao();
+        validacao.setHash(codigoValidacao);
+        validacao.setValidado(false);
+        validacao.persist();
+
+        return validacao;
+    }
+
     /**
      * Valida um hash existente no banco de dados
      * Incrementa tentativas de validação e marca data/hora

@@ -4,9 +4,8 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.matchesPattern;
 
 @QuarkusTest
 class QRCodeResourceTest {
@@ -19,8 +18,8 @@ class QRCodeResourceTest {
                 .when().post("/qrcode/gerar")
                 .then()
                 .statusCode(200)
-                .body("hash", matchesPattern("^[a-f0-9]{64}$"))
-                .body("qrCode", notNullValue());
+                .body("hash", equalTo("{\"formulario\":\"teste-qrcode\"}"))
+                .body("qrCode", equalTo("{\"formulario\":\"teste-qrcode\"}"));
     }
 
     @Test
@@ -31,6 +30,6 @@ class QRCodeResourceTest {
                 .when().post("/qrcode/gerar")
                 .then()
                 .statusCode(400)
-                .body("error", is("Payload e obrigatorio para gerar o hash"));
+                .body("error", is("Codigo de validacao e obrigatorio"));
     }
 }

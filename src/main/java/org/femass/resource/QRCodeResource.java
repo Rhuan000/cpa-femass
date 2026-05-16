@@ -26,7 +26,7 @@ public class QRCodeResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response gerarHashParaQRCode(String payload) {
         try {
-            Validacao validacao = validacaoService.armazenarHash(payload);
+            Validacao validacao = validacaoService.armazenarCodigoValidacao(payload);
             return Response.ok(new QRCodeResponseDTO(validacao.getHash(), validacao.getHash())).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)

@@ -1,6 +1,5 @@
 package org.femass.resource;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
@@ -23,16 +22,12 @@ public class FormularioResource {
     @Inject
     private FormularioService formularioService;
 
-    @Inject
-    ObjectMapper objectMapper;
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response PostFormulario(FormularioDTO formularioDTO) {
         try {
-            String payloadParaHash = objectMapper.writeValueAsString(formularioDTO);
-            Validacao validacao = formularioService.salvarEGerarHash(formularioDTO, payloadParaHash);
+            Validacao validacao = formularioService.salvarEGerarHash(formularioDTO);
             return Response.ok(new QRCodeResponseDTO(validacao.getHash(), validacao.getHash())).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)

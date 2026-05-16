@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "VALIDACAO")
 public class Validacao extends PanacheEntityBase {
     @Id
-    @Column(name = "HASH", length = 64, nullable = false, unique = true)
+    @Column(name = "HASH", length = 512, nullable = false, unique = true)
     private String hash;
 
     @Column(name = "VALIDADO", nullable = false)
