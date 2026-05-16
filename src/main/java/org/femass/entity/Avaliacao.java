@@ -5,16 +5,12 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "avaliacoes")
+@Table(name = "AVALIACAO")
 public class Avaliacao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario; // Usuário que fez a avaliação
 
     @ManyToOne
     @JoinColumn(name = "disciplina_id", nullable = false)
@@ -23,7 +19,7 @@ public class Avaliacao {
     @OneToMany(mappedBy = "avaliacao", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Resposta> respostas; // Respostas das perguntas
 
-    @Column(name = "comentarios", length = 1000)
+    @Column(name = "comentario", length = 1000)
     private String comentariosGerais; // Comentários adicionais
 
     // Getters e Setters
@@ -35,13 +31,6 @@ public class Avaliacao {
         this.id = id;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
 
     public Disciplina getDisciplina() {
         return disciplina;
