@@ -14,6 +14,7 @@ import org.femass.entity.Curso;
 import org.femass.entity.Disciplina;
 import org.femass.entity.Pergunta;
 import org.femass.entity.Resposta;
+import org.femass.entity.Validacao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,21 @@ public class FormularioService {
     @Inject
     EntityManager entityManager;
 
+    @Inject
+    ValidacaoService validacaoService;
+
     @Transactional
     public void salvar(FormularioDTO formularioDTO) {
+        salvarFormulario(formularioDTO);
+    }
+
+    @Transactional
+    public Validacao salvarEGerarHash(FormularioDTO formularioDTO, String payloadParaHash) {
+        salvarFormulario(formularioDTO);
+        return validacaoService.armazenarHash(payloadParaHash);
+    }
+
+    private void salvarFormulario(FormularioDTO formularioDTO) {
         validarFormulario(formularioDTO);
 
         int avaliacoesSalvas = 0;

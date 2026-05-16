@@ -237,3 +237,7 @@ INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (217, 'Gestão de 
 INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (218, 'Gerência em Informação', 'Prof. Emerson Borges', 6);
 INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (219, 'Desenvolvimento de Sistemas II', 'Prof. Afonso Carlos Tavares', 6);
 INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (220, 'Empreendedorismo e Gestão Estratégica', 'Prof. Leandro Ulisses Romiti', 6);
+
+-- Ajusta as sequencias apos inserts com IDs fixos.
+SELECT setval(pg_get_serial_sequence('curso', 'id'), (SELECT MAX(id) FROM curso));
+SELECT setval(pg_get_serial_sequence('disciplina', 'id'), (SELECT MAX(id) FROM disciplina));

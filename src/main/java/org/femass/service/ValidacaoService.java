@@ -15,8 +15,17 @@ public class ValidacaoService {
      */
     @Transactional
     public Validacao armazenarHash(String payload) {
+        if (payload == null || payload.isBlank()) {
+            throw new IllegalArgumentException("Payload e obrigatorio para gerar o hash");
+        }
+
         // Gera um hash SHA-256 do payload
         String hash = gerarHashSHA256(payload);
+
+        Validacao validacaoExistente = Validacao.find("hash", hash).firstResult();
+        if (validacaoExistente != null) {
+            return validacaoExistente;
+        }
         
         // Cria e persiste a entidade Validacao
         Validacao validacao = new Validacao();
