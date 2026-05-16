@@ -1,10 +1,11 @@
 package org.femass.entity;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "respostas")
-public class Resposta {
+public class Resposta  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
