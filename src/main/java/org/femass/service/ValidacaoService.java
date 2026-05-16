@@ -15,8 +15,17 @@ public class ValidacaoService {
      */
     @Transactional
     public Validacao armazenarHash(String payload) {
+        if (payload == null || payload.isBlank()) {
+            throw new IllegalArgumentException("Payload e obrigatorio para gerar o hash");
+        }
+
         // Gera um hash SHA-256 do payload
         String hash = gerarHashSHA256(payload);
+
+        Validacao validacaoExistente = Validacao.find("hash", hash).firstResult();
+        if (validacaoExistente != null) {
+            return validacaoExistente;
+        }
         
         // Cria e persiste a entidade Validacao
         Validacao validacao = new Validacao();
@@ -25,6 +34,25 @@ public class ValidacaoService {
         validacao.persist();
         
         System.out.println("Hash armazenado com sucesso: " + hash);
+        return validacao;
+    }
+
+    @Transactional
+    public Validacao armazenarCodigoValidacao(String codigoValidacao) {
+        if (codigoValidacao == null || codigoValidacao.isBlank()) {
+            throw new IllegalArgumentException("Codigo de validacao e obrigatorio");
+        }
+
+        Validacao validacaoExistente = Validacao.find("hash", codigoValidacao).firstResult();
+        if (validacaoExistente != null) {
+            return validacaoExistente;
+        }
+
+        Validacao validacao = new Validacao();
+        validacao.setHash(codigoValidacao);
+        validacao.setValidado(false);
+        validacao.persist();
+
         return validacao;
     }
 
