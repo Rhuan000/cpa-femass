@@ -51,6 +51,9 @@ public class ValidacaoService {
         
         // Marca como validado
         validacao.setValidado(true);
+
+
+
         validacao.setDataValidacao(java.time.LocalDateTime.now());
         
         System.out.println("Hash validado com sucesso: " + hash);

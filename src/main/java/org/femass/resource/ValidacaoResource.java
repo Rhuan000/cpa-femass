@@ -44,6 +44,7 @@ public class ValidacaoResource {
                 .build();
         }
 
+
         try {
             Validacao validacao = service.validarHash(hash);
             ValidacaoResponseDTO response = new ValidacaoResponseDTO(
@@ -72,8 +73,8 @@ public class ValidacaoResource {
     public Response validarHashDetalhado(@QueryParam("hash") String hash) {
         if (hash == null || hash.isBlank()) {
             return Response.status(Response.Status.BAD_REQUEST)
-                .entity(new ErrorResponseDTO("Hash é obrigatório como parâmetro de query"))
-                .build();
+                    .entity(new ErrorResponseDTO("Hash é obrigatório como parâmetro de query"))
+                    .build();
         }
 
         try {
@@ -97,10 +98,12 @@ public class ValidacaoResource {
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND)
                 .entity(new ErrorResponseDTO(e.getMessage()))
+                    .type(MediaType.APPLICATION_JSON)
                 .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(new ErrorResponseDTO("Erro ao validar hash: " + e.getMessage()))
+                    .type(MediaType.APPLICATION_JSON)
                 .build();
         }
     }
