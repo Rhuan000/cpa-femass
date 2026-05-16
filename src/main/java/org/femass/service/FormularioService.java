@@ -1,15 +1,12 @@
 package org.femass.service;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.femass.dto.CursoDTO;
 import org.femass.dto.FormularioDTO;
-import org.femass.dto.QRCodePayloadDTO;
 import org.femass.dto.RespostaDTO;
 import org.femass.dto.SubjectDTO;
 import org.femass.entity.Avaliacao;
@@ -19,12 +16,8 @@ import org.femass.entity.Pergunta;
 import org.femass.entity.Resposta;
 import org.femass.entity.Validacao;
 
-import java.nio.charset.StandardCharsets;
-import java.text.Normalizer;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
-import java.util.UUID;
 
 @ApplicationScoped
 public class FormularioService {
@@ -36,7 +29,7 @@ public class FormularioService {
     ValidacaoService validacaoService;
 
     @Inject
-    ObjectMapper objectMapper;
+    QRCodeService qrCodeService;
 
     @Transactional
     public void salvar(FormularioDTO formularioDTO) {
@@ -46,7 +39,8 @@ public class FormularioService {
     @Transactional
     public Validacao salvarEGerarHash(FormularioDTO formularioDTO) {
         salvarFormulario(formularioDTO);
-        return validacaoService.armazenarCodigoValidacao(gerarCodigoValidacao(formularioDTO));
+        String codigoValidacao = qrCodeService.codificar(qrCodeService.criarPayload(formularioDTO));
+        return validacaoService.armazenarCodigoValidacao(codigoValidacao);
     }
 
     private void salvarFormulario(FormularioDTO formularioDTO) {
@@ -214,48 +208,11 @@ public class FormularioService {
         return pergunta;
     }
 
-    private String gerarCodigoValidacao(FormularioDTO formularioDTO) {
-        QRCodePayloadDTO payload = new QRCodePayloadDTO(
-                primeirosQuatroDigitosCpf(formularioDTO.respondent.cpf),
-                formularioDTO.respondent.matricula,
-                gerarCodigosDisciplinas(formularioDTO.subjects),
-                UUID.randomUUID().toString()
-        );
-
-        try {
-            String json = objectMapper.writeValueAsString(payload);
-            return Base64.getUrlEncoder()
-                    .withoutPadding()
-                    .encodeToString(json.getBytes(StandardCharsets.UTF_8));
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Erro ao gerar payload do QR Code", e);
-        }
-    }
-
-    private List<String> gerarCodigosDisciplinas(List<SubjectDTO> subjects) {
-        return subjects.stream()
-                .map(subject -> tresPrimeirasLetras(subject.subjectName))
-                .toList();
-    }
-
     private String primeirosQuatroDigitosCpf(String cpf) {
         return apenasDigitos(cpf).substring(0, 4);
     }
 
     private String apenasDigitos(String valor) {
         return valor.replaceAll("\\D", "");
-    }
-
-    private String tresPrimeirasLetras(String valor) {
-        String normalizado = Normalizer.normalize(valor.trim(), Normalizer.Form.NFD)
-                .replaceAll("\\p{M}", "")
-                .replaceAll("[^A-Za-z]", "")
-                .toUpperCase();
-
-        if (normalizado.length() < 3) {
-            throw new IllegalArgumentException("Nome da disciplina deve ter ao menos 3 letras");
-        }
-
-        return normalizado.substring(0, 3);
     }
 }

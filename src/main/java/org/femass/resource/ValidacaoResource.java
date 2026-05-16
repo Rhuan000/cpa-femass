@@ -10,6 +10,7 @@ import org.femass.dto.ValidacaoDetailResponseDTO;
 import org.femass.dto.ValidacaoResponseDTO;
 import org.femass.dto.ValidacaoStatusDTO;
 import org.femass.entity.Validacao;
+import org.femass.service.QRCodeService;
 import org.femass.service.ValidacaoService;
 
 @ApplicationScoped
@@ -19,16 +20,19 @@ public class ValidacaoResource {
     @Inject
     ValidacaoService service;
 
+    @Inject
+    QRCodeService qrCodeService;
+
     @POST
-    @Path("/armazenar-hash")
+    @Path("/armazenar-codigo")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response armazenarHash(String payload) {
-        Validacao validacao = service.armazenarHash(payload);
+    public Response armazenarCodigo(String codigo) {
+        Validacao validacao = service.armazenarCodigoValidacao(codigo);
         ValidacaoResponseDTO response = new ValidacaoResponseDTO(
-            "Payload recebido com sucesso!",
+            "Codigo recebido com sucesso!",
             validacao.getHash(),
             validacao.getHash(),
-            payload
+            codigo
         );
         return Response.ok(response, MediaType.APPLICATION_JSON).build();
     }
@@ -47,12 +51,7 @@ public class ValidacaoResource {
 
         try {
             Validacao validacao = service.validarHash(hash);
-            ValidacaoResponseDTO response = new ValidacaoResponseDTO(
-                "Hash validado com sucesso!",
-                validacao.getHash(),
-                validacao.getHash(),
-                "validacao_confirmada"
-            );
+            var response = qrCodeService.decodificar(validacao.getHash());
             return Response.ok(response, MediaType.APPLICATION_JSON).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND)

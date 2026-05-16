@@ -111,6 +111,7 @@ class FormularioResourceTest {
 
         org.hamcrest.MatcherAssert.assertThat(payload, org.hamcrest.Matchers.containsString("\"cpf\":\"9876\""));
         org.hamcrest.MatcherAssert.assertThat(payload, org.hamcrest.Matchers.containsString("\"matricula\":\"20260002\""));
+        org.hamcrest.MatcherAssert.assertThat(payload, org.hamcrest.Matchers.containsString("\"cursos\":[\"Curso Teste QR\"]"));
         org.hamcrest.MatcherAssert.assertThat(payload, org.hamcrest.Matchers.containsString("\"ALG\""));
         org.hamcrest.MatcherAssert.assertThat(payload, org.hamcrest.Matchers.containsString("\"SIS\""));
         org.hamcrest.MatcherAssert.assertThat(payload, org.hamcrest.Matchers.containsString("\"identificador\":"));

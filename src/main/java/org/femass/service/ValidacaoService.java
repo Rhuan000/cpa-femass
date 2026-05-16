@@ -3,39 +3,9 @@ package org.femass.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import org.femass.entity.Validacao;
-import java.time.LocalDateTime;
 
 @ApplicationScoped
 public class ValidacaoService {
-
-    /**
-     * Armazena o hash de um payload na entidade Validacao
-     * @param payload - o payload a ser armazenado como hash
-     * @return a entidade Validacao persistida
-     */
-    @Transactional
-    public Validacao armazenarHash(String payload) {
-        if (payload == null || payload.isBlank()) {
-            throw new IllegalArgumentException("Payload e obrigatorio para gerar o hash");
-        }
-
-        // Gera um hash SHA-256 do payload
-        String hash = gerarHashSHA256(payload);
-
-        Validacao validacaoExistente = Validacao.find("hash", hash).firstResult();
-        if (validacaoExistente != null) {
-            return validacaoExistente;
-        }
-        
-        // Cria e persiste a entidade Validacao
-        Validacao validacao = new Validacao();
-        validacao.setHash(hash);
-        validacao.setValidado(false);
-        validacao.persist();
-        
-        System.out.println("Hash armazenado com sucesso: " + hash);
-        return validacao;
-    }
 
     @Transactional
     public Validacao armazenarCodigoValidacao(String codigoValidacao) {
@@ -149,28 +119,4 @@ public class ValidacaoService {
         return validacao;
     }
 
-    /**
-     * Gera um hash SHA-256 de um payload
-     * @param payload - o texto a ser convertido em hash
-     * @return hash SHA-256 em formato hexadecimal
-     */
-    private String gerarHashSHA256(String payload) {
-        try {
-            java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(payload.getBytes(java.nio.charset.StandardCharsets.UTF_8));
-            StringBuilder hexString = new StringBuilder();
-            
-            for (byte b : hash) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) {
-                    hexString.append('0');
-                }
-                hexString.append(hex);
-            }
-            
-            return hexString.toString();
-        } catch (java.security.NoSuchAlgorithmException e) {
-            throw new RuntimeException("Erro ao gerar hash SHA-256: " + e.getMessage(), e);
-        }
-    }
 }
