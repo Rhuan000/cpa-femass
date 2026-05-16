@@ -26,66 +26,105 @@ public class FormularioService {
 
     @Transactional
     public void salvar(FormularioDTO formularioDTO) {
-        if (formularioDTO == null) {
-            return;
-        }
+        validarFormulario(formularioDTO);
+
+        int avaliacoesSalvas = 0;
 
         Curso curso = buscarOuCriarCurso(formularioDTO.course);
-        if (curso == null) {
-            return;
-        }
-
-        if (formularioDTO.subjects == null) {
-            return;
-        }
 
         for (SubjectDTO subjectDTO : formularioDTO.subjects) {
+            validarSubject(subjectDTO);
+
             Disciplina disciplina = buscarOuCriarDisciplina(subjectDTO, curso);
-            if (disciplina == null) {
-                continue;
-            }
             Avaliacao avaliacao = new Avaliacao();
             avaliacao.setDisciplina(disciplina);
             avaliacao.setComentariosGerais(subjectDTO.comment);
 
             List<Resposta> respostas = new ArrayList<>();
-            if (subjectDTO.answers != null) {
-                for (RespostaDTO respostaDTO : subjectDTO.answers) {
-                    Pergunta pergunta = buscarOuCriarPergunta(respostaDTO);
-                    if (pergunta == null || respostaDTO.score == null) {
-                        continue;
-                    }
-                    Resposta resposta = new Resposta();
-                    resposta.setAvaliacao(avaliacao);
-                    resposta.setPergunta(pergunta);
-                    resposta.setNota(respostaDTO.score);
-                    respostas.add(resposta);
-                }
+            for (RespostaDTO respostaDTO : subjectDTO.answers) {
+                validarResposta(respostaDTO);
+
+                Pergunta pergunta = buscarOuCriarPergunta(respostaDTO);
+                Resposta resposta = new Resposta();
+                resposta.setAvaliacao(avaliacao);
+                resposta.setPergunta(pergunta);
+                resposta.setNota(respostaDTO.score);
+                respostas.add(resposta);
             }
 
             avaliacao.setRespostas(respostas);
             entityManager.persist(avaliacao);
+            avaliacoesSalvas++;
+        }
+
+        if (avaliacoesSalvas == 0) {
+            throw new IllegalArgumentException("Nenhuma avaliacao valida foi informada");
+        }
+
+        entityManager.flush();
+    }
+
+    private void validarFormulario(FormularioDTO formularioDTO) {
+        if (formularioDTO == null) {
+            throw new IllegalArgumentException("Formulario nao pode ser vazio");
+        }
+
+        if (formularioDTO.course == null) {
+            throw new IllegalArgumentException("Curso e obrigatorio");
+        }
+
+        if (formularioDTO.course.name == null || formularioDTO.course.name.isBlank()) {
+            throw new IllegalArgumentException("Nome do curso e obrigatorio");
+        }
+
+        if (formularioDTO.subjects == null || formularioDTO.subjects.isEmpty()) {
+            throw new IllegalArgumentException("Ao menos uma disciplina deve ser informada");
+        }
+    }
+
+    private void validarSubject(SubjectDTO subjectDTO) {
+        if (subjectDTO == null) {
+            throw new IllegalArgumentException("Disciplina nao pode ser vazia");
+        }
+
+        if (subjectDTO.subjectName == null || subjectDTO.subjectName.isBlank()) {
+            throw new IllegalArgumentException("Nome da disciplina e obrigatorio");
+        }
+
+        if (subjectDTO.teacherName == null || subjectDTO.teacherName.isBlank()) {
+            throw new IllegalArgumentException("Nome do professor e obrigatorio");
+        }
+
+        if (subjectDTO.answers == null || subjectDTO.answers.isEmpty()) {
+            throw new IllegalArgumentException("Ao menos uma resposta deve ser informada");
+        }
+    }
+
+    private void validarResposta(RespostaDTO respostaDTO) {
+        if (respostaDTO == null) {
+            throw new IllegalArgumentException("Resposta nao pode ser vazia");
+        }
+
+        if (respostaDTO.questionText == null || respostaDTO.questionText.isBlank()) {
+            throw new IllegalArgumentException("Texto da pergunta e obrigatorio");
+        }
+
+        if (respostaDTO.score == null) {
+            throw new IllegalArgumentException("Nota da resposta e obrigatoria");
+        }
+
+        if (respostaDTO.score < 1 || respostaDTO.score > 5) {
+            throw new IllegalArgumentException("Nota da resposta deve estar entre 1 e 5");
         }
     }
 
     private Curso buscarOuCriarCurso(CursoDTO cursoDTO) {
-        if (cursoDTO == null) {
-            return null;
-        }
-
-        if (cursoDTO.name == null || cursoDTO.name.isBlank()) {
-            return null;
-        }
-
-        Curso curso = null;
-        if (cursoDTO.name != null && !cursoDTO.name.isBlank()) {
-            curso = entityManager.createQuery(
-                    "from Curso where nome = :nome", Curso.class)
-                .setParameter("nome", cursoDTO.name)
-                .getResultStream()
-                .findFirst()
-                .orElse(null);
-        }
+        Curso curso = entityManager.createQuery(
+                "from Curso where nome = :nome", Curso.class)
+            .setParameter("nome", cursoDTO.name)
+            .getResultStream()
+            .findFirst()
+            .orElse(null);
 
         if (curso == null) {
             curso = new Curso();
@@ -97,30 +136,15 @@ public class FormularioService {
     }
 
     private Disciplina buscarOuCriarDisciplina(SubjectDTO subjectDTO, Curso curso) {
-        if (subjectDTO == null || curso == null) {
-            return null;
-        }
-
-        if (subjectDTO.subjectName == null || subjectDTO.subjectName.isBlank()) {
-            return null;
-        }
-
-        if (subjectDTO.teacherName == null || subjectDTO.teacherName.isBlank()) {
-            return null;
-        }
-
-        Disciplina disciplina = null;
-        if (subjectDTO.teacherName != null && !subjectDTO.teacherName.isBlank()) {
-            disciplina = entityManager.createQuery(
-                    "from Disciplina where nome = :nome and professor = :professor and curso = :curso",
-                    Disciplina.class)
-                .setParameter("nome", subjectDTO.subjectName)
-                .setParameter("professor", subjectDTO.teacherName)
-                .setParameter("curso", curso)
-                .getResultStream()
-                .findFirst()
-                .orElse(null);
-        }
+        Disciplina disciplina = entityManager.createQuery(
+                "from Disciplina where nome = :nome and professor = :professor and curso = :curso",
+                Disciplina.class)
+            .setParameter("nome", subjectDTO.subjectName)
+            .setParameter("professor", subjectDTO.teacherName)
+            .setParameter("curso", curso)
+            .getResultStream()
+            .findFirst()
+            .orElse(null);
 
         if (disciplina == null) {
             disciplina = new Disciplina();
@@ -134,19 +158,12 @@ public class FormularioService {
     }
 
     private Pergunta buscarOuCriarPergunta(RespostaDTO respostaDTO) {
-        if (respostaDTO == null || respostaDTO.questionText == null || respostaDTO.questionText.isBlank()) {
-            return null;
-        }
-
-        Pergunta pergunta = null;
-        if (respostaDTO.questionText != null && !respostaDTO.questionText.isBlank()) {
-            pergunta = entityManager.createQuery(
-                    "from Pergunta where texto = :texto", Pergunta.class)
-                .setParameter("texto", respostaDTO.questionText)
-                .getResultStream()
-                .findFirst()
-                .orElse(null);
-        }
+        Pergunta pergunta = entityManager.createQuery(
+                "from Pergunta where texto = :texto", Pergunta.class)
+            .setParameter("texto", respostaDTO.questionText)
+            .getResultStream()
+            .findFirst()
+            .orElse(null);
 
         if (pergunta == null) {
             pergunta = new Pergunta();
