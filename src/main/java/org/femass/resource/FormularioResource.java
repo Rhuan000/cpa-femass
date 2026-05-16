@@ -8,7 +8,10 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.femass.dto.ErrorResponseDTO;
 import org.femass.dto.FormularioDTO;
+import org.femass.exception.CPFInvalidoException;
+import org.femass.exception.InvalidFormularioException;
 import org.femass.service.FormularioService;
 
 @ApplicationScoped
@@ -22,8 +25,15 @@ public class FormularioResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response PostFormulario(FormularioDTO formularioDTO) {
-        formularioService.salvar(formularioDTO);
-        return Response.ok().build();
+        try {
+            formularioService.salvar(formularioDTO);
+            return Response.ok().build();
+        } catch (CPFInvalidoException | InvalidFormularioException e) {
+            ErrorResponseDTO errorResponse = new ErrorResponseDTO(e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST)
+                .entity(errorResponse)
+                .build();
+        }
     }
 
 }
