@@ -2,6 +2,7 @@ package org.femass.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.femass.dto.FormularioDTO;
@@ -20,14 +21,19 @@ public class QRCodeService {
 
     @Inject
     ObjectMapper objectMapper;
+     //Leitor de variavel de ambiente
 
     public QRCodePayloadDTO criarPayload(FormularioDTO formularioDTO) {
         return new QRCodePayloadDTO(
                 primeirosQuatroDigitosCpf(formularioDTO.respondent.cpf),
                 formularioDTO.respondent.matricula,
                 List.of(formularioDTO.course.name),
-                gerarCodigosDisciplinas(formularioDTO.subjects),
-                UUID.randomUUID().toString()
+                //gerarCodigosDisciplinas(formularioDTO.subjects),
+                formularioDTO.subjects.stream()
+                        .map(subject -> subject.subjectName)
+                        .toList(),
+                //UUID.randomUUID().toString()
+                "97db36ef9907c55d069dee4558269a42"
         );
     }
 
