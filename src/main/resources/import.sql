@@ -16,7 +16,7 @@ INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (6, 'Português In
 INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (7, 'Estágio Supervisionado I (ADM)', 'Profa. Gisele Muniz', 1);
 INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (8, 'Estágio Supervisionado II (ADM)', 'Profa. Larissa Tavares', 1);
 INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (9, 'Trabalho de Conclusão de Curso II - ADM', 'Profa. Janimayri Forastieri', 1);
-INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (10, 'Matemática II', 'Prof. Vinívius Luz', 1);
+INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (10, 'Matemática II', 'Prof. Vinícius Luz', 1);
 INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (11, 'Estatística e Probabilidade', 'a definir', 1);
 INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (12, 'Teoria Geral da Administração', 'Prof. Samuel Martins', 1);
 INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (13, 'Economia Micro e Macro', 'Profa. Camila Sampaio', 1);
@@ -238,6 +238,19 @@ INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (218, 'Gerência e
 INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (219, 'Desenvolvimento de Sistemas II', 'Prof. Afonso Carlos Tavares', 6);
 INSERT INTO disciplina (id, nome, professor, curso_id) VALUES (220, 'Empreendedorismo e Gestão Estratégica', 'Prof. Leandro Ulisses Romiti', 6);
 
+-- Perguntas do formulário de avaliação docente
+INSERT INTO pergunta (id, codigo, texto) VALUES (1, 'q1', 'Promove o debate e instiga o pensamento crítico, colaborando para a autonomia dos estudantes.');
+INSERT INTO pergunta (id, codigo, texto) VALUES (2, 'q2', 'Relaciona aspectos teóricos com suas implicações e aplicações práticas.');
+INSERT INTO pergunta (id, codigo, texto) VALUES (3, 'q3', 'Há coerência entre o que é ensinado e o que solicita nas avaliações.');
+INSERT INTO pergunta (id, codigo, texto) VALUES (4, 'q4', 'Utiliza diferentes estratégias avaliativas.');
+INSERT INTO pergunta (id, codigo, texto) VALUES (5, 'q5', 'Relaciona a sua disciplina com conteúdos, competências e habilidades de outras disciplinas do curso.');
+INSERT INTO pergunta (id, codigo, texto) VALUES (6, 'q6', 'Analisa os resultados das avaliações com os estudantes, desenvolvendo mecanismos para a superação das dificuldades.');
+INSERT INTO pergunta (id, codigo, texto) VALUES (7, 'q7', 'Mostra-se aberto ao diálogo, motivando os discentes a prosseguir nos estudos.');
+INSERT INTO pergunta (id, codigo, texto) VALUES (8, 'q8', 'Faz uso adequado do seu tempo regular de aula, facilitando a aprendizagem em sala de aula.');
+INSERT INTO pergunta (id, codigo, texto) VALUES (9, 'q9', 'Apresentou a disciplina disponibilizando plano de curso, estratégias de ensino e critérios de avaliação.');
+INSERT INTO pergunta (id, codigo, texto) VALUES (10, 'q10', 'Utiliza diferentes estratégias pedagógicas ou andragógicas que incentivam a aprendizagem e a pesquisa.');
+
 -- Ajusta as sequencias apos inserts com IDs fixos.
 SELECT setval(pg_get_serial_sequence('curso', 'id'), (SELECT MAX(id) FROM curso));
 SELECT setval(pg_get_serial_sequence('disciplina', 'id'), (SELECT MAX(id) FROM disciplina));
+SELECT setval(pg_get_serial_sequence('pergunta', 'id'), (SELECT MAX(id) FROM pergunta));

@@ -280,12 +280,25 @@ public class FormularioService {
     }
 
     private Pergunta buscarOuCriarPergunta(RespostaDTO respostaDTO) {
-        Pergunta pergunta = entityManager.createQuery(
-                "from Pergunta where texto = :texto", Pergunta.class)
-            .setParameter("texto", respostaDTO.questionText)
-            .getResultStream()
-            .findFirst()
-            .orElse(null);
+        Pergunta pergunta = null;
+
+        if (respostaDTO.questionId != null && !respostaDTO.questionId.isBlank()) {
+            pergunta = entityManager.createQuery(
+                    "from Pergunta where codigo = :codigo", Pergunta.class)
+                .setParameter("codigo", respostaDTO.questionId)
+                .getResultStream()
+                .findFirst()
+                .orElse(null);
+        }
+
+        if (pergunta == null) {
+            pergunta = entityManager.createQuery(
+                    "from Pergunta where texto = :texto", Pergunta.class)
+                .setParameter("texto", respostaDTO.questionText)
+                .getResultStream()
+                .findFirst()
+                .orElse(null);
+        }
 
         if (pergunta == null) {
             pergunta = new Pergunta();

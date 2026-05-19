@@ -11,6 +11,7 @@ import org.femass.entity.Curso;
 import org.femass.entity.Disciplina;
 import org.femass.entity.Pergunta;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,12 +64,26 @@ public class DadosFormularioService {
         }
     }
 
-    private List<PerguntaFormularioDTO> buscarPerguntas() {
+    public List<PerguntaFormularioDTO> buscarPerguntas() {
         return entityManager.createQuery(
-                "from Pergunta order by texto",
+                "from Pergunta where codigo is not null",
                 Pergunta.class
         ).getResultStream()
-                .map(pergunta -> new PerguntaFormularioDTO(pergunta.getId(), pergunta.getTexto()))
+                .sorted(Comparator.comparingInt(this::ordemPergunta))
+                .map(pergunta -> new PerguntaFormularioDTO(pergunta.getCodigo(), pergunta.getTexto()))
                 .toList();
+    }
+
+    private int ordemPergunta(Pergunta pergunta) {
+        String codigo = pergunta.getCodigo();
+        if (codigo == null || codigo.length() < 2) {
+            return Integer.MAX_VALUE;
+        }
+
+        try {
+            return Integer.parseInt(codigo.substring(1));
+        } catch (NumberFormatException e) {
+            return Integer.MAX_VALUE;
+        }
     }
 }

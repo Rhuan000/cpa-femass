@@ -11,6 +11,9 @@ public class Pergunta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "CODIGO", unique = true)
+    private String codigo;
+
     @Column(name="TEXTO", nullable = false, unique = true)
     private String texto; // Texto da pergunta
 
@@ -21,6 +24,14 @@ public class Pergunta {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     public String getTexto() {
