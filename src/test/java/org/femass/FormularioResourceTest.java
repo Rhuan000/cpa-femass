@@ -23,7 +23,8 @@ class FormularioResourceTest {
                   "confirmationCode": "confirmacao-teste",
                   "respondent": {
                     "cpf": "123.456.789-00",
-                    "matricula": "20260001"
+                    "matricula": "20260001",
+                    "aceiteTermosCondicoesServico": true
                   },
                   "course": {
                     "name": "Curso Teste Formulario"
@@ -66,7 +67,8 @@ class FormularioResourceTest {
                   "confirmationCode": "confirmacao-teste-decodificacao",
                   "respondent": {
                     "cpf": "987.654.321-00",
-                    "matricula": "20260002"
+                    "matricula": "20260002",
+                    "aceiteTermosCondicoesServico": true
                   },
                   "course": {
                     "name": "Curso Teste QR"
@@ -111,6 +113,7 @@ class FormularioResourceTest {
 
         org.hamcrest.MatcherAssert.assertThat(payload, org.hamcrest.Matchers.containsString("\"cpf\":\"9876\""));
         org.hamcrest.MatcherAssert.assertThat(payload, org.hamcrest.Matchers.containsString("\"matricula\":\"20260002\""));
+        org.hamcrest.MatcherAssert.assertThat(payload, org.hamcrest.Matchers.containsString("\"aceiteTermosCondicoesServico\":true"));
         org.hamcrest.MatcherAssert.assertThat(payload, org.hamcrest.Matchers.containsString("\"cursos\":[\"Curso Teste QR\"]"));
         org.hamcrest.MatcherAssert.assertThat(payload, org.hamcrest.Matchers.containsString("\"ALG\""));
         org.hamcrest.MatcherAssert.assertThat(payload, org.hamcrest.Matchers.containsString("\"SIS\""));
@@ -126,7 +129,8 @@ class FormularioResourceTest {
                   "confirmationCode": "confirmacao-teste-unico",
                   "respondent": {
                     "cpf": "111.222.333-44",
-                    "matricula": "20260003"
+                    "matricula": "20260003",
+                    "aceiteTermosCondicoesServico": true
                   },
                   "course": {
                     "name": "Curso Teste Codigo Unico"

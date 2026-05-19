@@ -39,6 +39,7 @@
         DATA_CRIACAO timestamp(6),
         DATA_VALIDACAO timestamp(6),
         TENTATIVAS_VALIDACAO integer,
+        ACEITE_TERMOS_CONDICOES_SERVICO boolean not null default false,
         VALIDADO boolean not null,
         primary key (HASH)
     );

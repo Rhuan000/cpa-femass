@@ -25,6 +25,7 @@ public class QRCodeService {
         return new QRCodePayloadDTO(
                 primeirosQuatroDigitosCpf(formularioDTO.respondent.cpf),
                 formularioDTO.respondent.matricula,
+                formularioDTO.respondent.aceiteTermosCondicoesServico,
                 List.of(formularioDTO.course.name),
                 //gerarCodigosDisciplinas(formularioDTO.subjects),
                 formularioDTO.subjects.stream()
@@ -72,6 +73,10 @@ public class QRCodeService {
 
         if (payload.matricula == null || payload.matricula.isBlank()) {
             throw new IllegalArgumentException("Matricula e obrigatoria");
+        }
+
+        if (!Boolean.TRUE.equals(payload.aceiteTermosCondicoesServico)) {
+            throw new IllegalArgumentException("Aceite dos termos e condicoes de servico e obrigatorio");
         }
 
         if (payload.cursos == null || payload.cursos.isEmpty()) {

@@ -25,6 +25,9 @@ public class Validacao extends PanacheEntityBase {
     @Column(name = "TENTATIVAS_VALIDACAO", nullable = true)
     private Integer tentativasValidacao;
 
+    @Column(name = "ACEITE_TERMOS_CONDICOES_SERVICO", nullable = false)
+    private Boolean aceiteTermosCondicoesServico;
+
     @PrePersist
     public void prePersist() {
         if (this.dataCriacao == null) {
@@ -35,6 +38,9 @@ public class Validacao extends PanacheEntityBase {
         }
         if (this.tentativasValidacao == null) {
             this.tentativasValidacao = 0;
+        }
+        if (this.aceiteTermosCondicoesServico == null) {
+            this.aceiteTermosCondicoesServico = false;
         }
     }
 
@@ -76,6 +82,14 @@ public class Validacao extends PanacheEntityBase {
 
     public void setTentativasValidacao(Integer tentativasValidacao) {
         this.tentativasValidacao = tentativasValidacao;
+    }
+
+    public Boolean getAceiteTermosCondicoesServico() {
+        return aceiteTermosCondicoesServico;
+    }
+
+    public void setAceiteTermosCondicoesServico(Boolean aceiteTermosCondicoesServico) {
+        this.aceiteTermosCondicoesServico = aceiteTermosCondicoesServico;
     }
 }
 

@@ -45,7 +45,10 @@ public class FormularioService {
     public Validacao salvarEGerarHash(FormularioDTO formularioDTO) {
         salvarFormulario(formularioDTO);
         String codigoValidacao = qrCodeService.codificar(qrCodeService.criarPayload(formularioDTO));
-        return validacaoService.armazenarCodigoValidacao(codigoValidacao);
+        return validacaoService.armazenarCodigoValidacao(
+                codigoValidacao,
+                formularioDTO.respondent.aceiteTermosCondicoesServico
+        );
     }
 
     private void salvarFormulario(FormularioDTO formularioDTO) {
@@ -152,6 +155,10 @@ public class FormularioService {
 
         if (formularioDTO.respondent.matricula == null || formularioDTO.respondent.matricula.isBlank()) {
             throw new IllegalArgumentException("Matricula do respondente e obrigatoria");
+        }
+
+        if (!Boolean.TRUE.equals(formularioDTO.respondent.aceiteTermosCondicoesServico)) {
+            throw new IllegalArgumentException("Aceite dos termos e condicoes de servico e obrigatorio");
         }
 
         if (formularioDTO.subjects == null || formularioDTO.subjects.isEmpty()) {

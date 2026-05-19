@@ -18,6 +18,7 @@ class QRCodeResourceTest {
                         {
                           "cpf": "1234",
                           "matricula": "20260001",
+                          "aceiteTermosCondicoesServico": true,
                           "cursos": ["Sistemas da Informacao"],
                           "disciplinas": ["ALG", "SIS"],
                           "identificador": "11111111-1111-1111-1111-111111111111"
@@ -39,6 +40,7 @@ class QRCodeResourceTest {
                 .statusCode(200)
                 .body("cpf", is("1234"))
                 .body("matricula", is("20260001"))
+                .body("aceiteTermosCondicoesServico", is(true))
                 .body("cursos[0]", is("Sistemas da Informacao"))
                 .body("disciplinas[0]", is("ALG"))
                 .body("disciplinas[1]", is("SIS"))

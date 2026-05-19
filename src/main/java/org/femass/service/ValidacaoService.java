@@ -9,6 +9,11 @@ public class ValidacaoService {
 
     @Transactional
     public Validacao armazenarCodigoValidacao(String codigoValidacao) {
+        return armazenarCodigoValidacao(codigoValidacao, false);
+    }
+
+    @Transactional
+    public Validacao armazenarCodigoValidacao(String codigoValidacao, Boolean aceiteTermosCondicoesServico) {
         if (codigoValidacao == null || codigoValidacao.isBlank()) {
             throw new IllegalArgumentException("Codigo de validacao e obrigatorio");
         }
@@ -21,6 +26,7 @@ public class ValidacaoService {
         Validacao validacao = new Validacao();
         validacao.setHash(codigoValidacao);
         validacao.setValidado(false);
+        validacao.setAceiteTermosCondicoesServico(Boolean.TRUE.equals(aceiteTermosCondicoesServico));
         validacao.persist();
 
         return validacao;

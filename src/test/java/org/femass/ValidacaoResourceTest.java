@@ -27,6 +27,7 @@ class ValidacaoResourceTest {
                         {
                           "cpf": "1234",
                           "matricula": "20260001",
+                          "aceiteTermosCondicoesServico": true,
                           "cursos": ["Sistemas da Informacao"],
                           "disciplinas": ["ALG", "SIS"],
                           "identificador": "%s"
@@ -45,6 +46,7 @@ class ValidacaoResourceTest {
                 .statusCode(200)
                 .body("cpf", is("1234"))
                 .body("matricula", is("20260001"))
+                .body("aceiteTermosCondicoesServico", is(true))
                 .body("cursos[0]", is("Sistemas da Informacao"))
                 .body("disciplinas[0]", is("ALG"))
                 .body("disciplinas[1]", is("SIS"));
@@ -59,6 +61,7 @@ class ValidacaoResourceTest {
                         {
                           "cpf": "5678",
                           "matricula": "20260002",
+                          "aceiteTermosCondicoesServico": true,
                           "cursos": ["Administracao"],
                           "disciplinas": ["ADM"],
                           "identificador": "%s"

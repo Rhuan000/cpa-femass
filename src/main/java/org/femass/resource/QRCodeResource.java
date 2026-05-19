@@ -32,7 +32,7 @@ public class QRCodeResource {
     public Response gerarCodigoParaQRCode(QRCodePayloadDTO payload) {
         try {
             String codigo = qrCodeService.codificar(payload);
-            Validacao validacao = validacaoService.armazenarCodigoValidacao(codigo);
+            Validacao validacao = validacaoService.armazenarCodigoValidacao(codigo, payload.aceiteTermosCondicoesServico);
             return Response.ok(new QRCodeResponseDTO(validacao.getHash(), validacao.getHash())).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
