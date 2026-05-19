@@ -7,10 +7,12 @@ import jakarta.inject.Inject;
 import org.femass.dto.FormularioDTO;
 import org.femass.dto.QRCodePayloadDTO;
 import org.femass.dto.SubjectDTO;
+import org.femass.entity.Validacao;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -117,5 +119,26 @@ public class QRCodeService {
         }
 
         return normalizado.substring(0, 3);
+    }
+    public List<QRCodePayloadDTO> decodificarListaHistorico(List<Validacao> historicoDeValidacao){
+        if (historicoDeValidacao == null || historicoDeValidacao.isEmpty()) {
+            throw new IllegalArgumentException("Histórico vazio");
+        }
+
+        try {
+            List<byte[]> historicoDeHashcodificado = new ArrayList<>();
+            List<QRCodePayloadDTO> listaDeHashDecodificado = new ArrayList<>();
+            for(Validacao validacao : historicoDeValidacao){
+
+                historicoDeHashcodificado.add(Base64.getUrlDecoder().decode(validacao.getHash()));
+            }
+
+           for(byte[] hash : historicoDeHashcodificado){
+               listaDeHashDecodificado.add(objectMapper.readValue(hash, QRCodePayloadDTO.class));
+           }
+           return listaDeHashDecodificado;
+        } catch (IllegalArgumentException | IOException e) {
+            throw new IllegalArgumentException("Codigo do QR Code invalido");
+        }
     }
 }
