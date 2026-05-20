@@ -4,6 +4,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import org.femass.entity.Validacao;
 
+import java.util.List;
+
 @ApplicationScoped
 public class ValidacaoService {
 
@@ -95,5 +97,9 @@ public class ValidacaoService {
         }
 
         return validacao;
+    }
+    public List<Validacao> buscarDezUltimosHashs(){
+            List<Validacao> lista = Validacao.find("ORDER BY dataValidacao DESC").range(0,9).list();
+            return lista;
     }
 }

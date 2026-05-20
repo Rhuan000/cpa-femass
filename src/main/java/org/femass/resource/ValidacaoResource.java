@@ -5,13 +5,12 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.femass.dto.ErrorResponseDTO;
-import org.femass.dto.ValidacaoDetailResponseDTO;
-import org.femass.dto.ValidacaoResponseDTO;
-import org.femass.dto.ValidacaoStatusDTO;
+import org.femass.dto.*;
 import org.femass.entity.Validacao;
 import org.femass.service.QRCodeService;
 import org.femass.service.ValidacaoService;
+
+import java.util.List;
 
 @ApplicationScoped
 @Path("/validacao")
@@ -176,4 +175,25 @@ public class ValidacaoResource {
                 .build();
         }
     }
+    @GET
+    @Path("historico")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response historico() {
+       try{
+           List<Validacao> historico = service.buscarDezUltimosHashs();
+           List<QRCodePayloadDTO> response = qrCodeService.decodificarListaHistorico(historico);
+           return Response.ok(response, MediaType.APPLICATION_JSON).build();
+       }catch (IllegalArgumentException e) {
+           return Response.status(Response.Status.NOT_FOUND)
+                   .entity(new ErrorResponseDTO(e.getMessage()))
+                   .build();
+       } catch (Exception e) {
+           return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                   .entity(new ErrorResponseDTO("Erro ao buscar historico: " + e.getMessage()))
+                   .build();
+       }
+
+    }
+
+
 }
