@@ -99,7 +99,10 @@ public class ValidacaoService {
         return validacao;
     }
     public List<Validacao> buscarDezUltimosHashs(){
-            List<Validacao> lista = Validacao.find("ORDER BY dataValidacao DESC").range(0,9).list();
+        List<Validacao> lista = Validacao
+                .find("validado = true ORDER BY dataValidacao DESC")
+                .range(0, 9)
+                .list();
             return lista;
     }
 }
