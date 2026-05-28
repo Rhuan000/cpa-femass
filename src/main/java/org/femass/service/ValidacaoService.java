@@ -100,9 +100,13 @@ public class ValidacaoService {
     }
     public List<Validacao> buscarDezUltimosHashs(){
         List<Validacao> lista = Validacao
-                .find("validado = true ORDER BY dataValidacao DESC")
+                .find("""
+                    validado = true
+                    and dataValidacao is not null
+                    ORDER BY dataValidacao DESC
+                """)
                 .range(0, 9)
                 .list();
-            return lista;
+        return lista;
     }
 }
